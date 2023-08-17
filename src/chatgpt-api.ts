@@ -82,7 +82,7 @@ export class ChatGPTAPI {
 
     if (this._systemMessage === undefined) {
       const currentDate = new Date().toISOString().split('T')[0]
-      this._systemMessage = `You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible.\nNo knowledge cutoff.\nCurrent date: ${currentDate}`
+      this._systemMessage = `You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible.\nKnowledge cutoff: 2021-09-01\nCurrent date: ${currentDate}`
     }
 
     this._maxModelTokens = maxModelTokens
@@ -438,12 +438,8 @@ export class ChatGPTAPI {
       parentMessageId = parentMessage.parentMessageId
     } while (true)
 
-    // Use up to 4096 tokens (prompt + response), but try to leave 1000 tokens
-    // for the response.
-    const maxTokens = Math.max(
-      1,
-      Math.min(this._maxModelTokens - numTokens, this._maxResponseTokens)
-    )
+    // Use up to 4096 tokens (prompt + response)
+    const maxTokens = this._maxModelTokens - numTokens
 
     return { messages, maxTokens, numTokens }
   }
